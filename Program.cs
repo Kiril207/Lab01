@@ -1,100 +1,66 @@
 ﻿using System;
 
-class Point
+class Rectangle
 {
-    private int x, y;
-    public int X
+    private double sideA;
+    private double sideB;
+    public Rectangle(double sideA, double sideB)
     {
-        get { return x; }
+        this.sideA = sideA; 
+        this.sideB = sideB;
     }
-    public int Y
+    private double CalculateArea()
     {
-        get { return y; }
+        return sideA * sideB;
     }
-    public Point(int x,int y)
+    private double CalculatePeremeter()
     {
-        this.x = x;
-        this.y=y; 
+        return 2 * (sideA + sideB);
     }
-    public double Distance(Point other)
+    public double Area
     {
-        double distance = Math.Sqrt(Math.Pow(other.X - X, 2) + Math.Pow(other.Y - Y, 2));
-        if (distance == 0)
-        {
-            throw new ArgumentException("расстояние не может быть равно нулю");
-        }
-        return distance;
+        get {  return CalculateArea(); }
     }
-   
-}
-class Figure
-{
-    private Point[] points;
-    private string FigureName="";
-    public Figure(Point[] points,string FigureName)
+    public double Perimeter
     {
-        if (points.Length < 3 || points.Length > 5)
-        {
-            throw new ArgumentException($"Фигура {FigureName} не подходит, она должна иметь от 3 до 5 точек");
-        }
-        this.FigureName= FigureName;
-        this.points= points;
-    }
-    public double LenghtSide(Point A,Point B)
-    {
-        return A.Distance(B);
-    }
-    public double PerimeterCalculator()
-    {
-        double perimeter = 0;
-        for (int i = 0; i < points.Length; i++)
-        {
-            Point current= points[i]; 
-            Point next = points[(i+1)%points.Length];
-            perimeter += LenghtSide(current, next);
-        }
-        return perimeter;
-    }
-    public string GetFigureInfo()
-    {
-        return $"{FigureName} с периметром: {PerimeterCalculator()}";
+        get { return CalculatePeremeter(); }
     }
 }
-
 
 class Program
 {
     static void Main()
     {
-        Console.WriteLine("Программа для работы с многоугольниками");
-        Console.WriteLine("=======================================");
-
+        Console.WriteLine("Программа для вычисления площади и приметра");
+        Console.WriteLine();
         try
         {
-            // Создаем точки
-            Point p1 = new Point(0, 0);
-            Point p2 = new Point(0, 4);
-            Point p3 = new Point(3, 0);
-            Point p4 = new Point(3, 4);
-            Point p5 = new Point(1, 2);
-            Point p6 = new Point(5, 6);
+            Console.Write("Введите длину стороны A: ");
+            double sideA=GetPositiveNumber();
 
-            // Создаем фигуры
-            Figure triangle = new Figure([p1, p2, p3],"треугольник");
-            Figure rectangle = new Figure([ p1, p2, p4, p3],"прямоугольник");
-            Figure pentagon = new Figure([p1, p2, p4, p3, p5],"пентагон");
+            Console.Write("Введите длину стороны B: ");
+            double sideB=GetPositiveNumber();
 
-            // Выводим информацию
-            Console.WriteLine(triangle.GetFigureInfo());
-            Console.WriteLine(rectangle.GetFigureInfo());
-            Console.WriteLine(pentagon.GetFigureInfo());
+            Rectangle rectangle= new Rectangle(sideA, sideB);
+            Console.WriteLine("\nРезультаты");
+            Console.WriteLine($"площадь прямоугольника: {rectangle.Area}");
+            Console.WriteLine($"Периметр прямоугольника: {rectangle.Perimeter}");
 
-            // Демонстрация работы методов
-            Console.WriteLine($"\nДлина стороны между {p1} и {p2}: {triangle.LenghtSide(p1,p2)}");
         }
-        catch (Exception ex)
+        catch(Exception e) 
         {
-            Console.WriteLine($"Ошибка: {ex.Message}");
+            Console.WriteLine($"Ошибка: {e.Message}");
+        }
+    }
+    private static double GetPositiveNumber()
+    {
+        while (true)
+        {
+            if (double.TryParse(Console.ReadLine(), out double number) && number > 0)
+            {
+                return number;
+            }
+            Console.Write("Ошибка! Введите положительное число: ");
         }
     }
 }
